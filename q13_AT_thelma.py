@@ -14,7 +14,7 @@ class Question_13():
         self.bs_soup = BeautifulSoup(self.url, 'html.parser')
 
     def populate_list_of_words(self):
-        for txt in self.bs_soup.findAll('p', {'class':'about-text'}):
+        for txt in self.bs_soup.find_all('p', {'class':'about-text'}):
             words = txt.text.lower().split()
             for word in words:
                 self.list_of_words.append(word)
@@ -40,9 +40,9 @@ class Question_13():
         return self
 
     def print_output(self):
-        print(f"Total number of words in the body page: {self.total_occurrences}")
-        print(f"Words with only one occurrence: {self.filtered_dict.keys()}")
-        print(f"Number of currences of the word 'ladies': {self.ladies_occurrences}")
+        print(f"\nTotal number of words in the body page: {self.total_occurrences}")
+        print(f"\nWords with only one occurrence: {self.filtered_dict.keys()}")
+        print(f"\nNumber of currences of the word 'ladies': {self.ladies_occurrences}")
 
 def main():
     Question_13().populate_list_of_words().populate_dictionary().sum_dict_values().filter_dict_values().print_output()
