@@ -1,98 +1,56 @@
-
-"""
-10. Obtenha, usando requests ou urllib, dentro de seu programa em Python, o csv do link:
-https://sites.google.com/site/dr2fundamentospython/arquivos/Winter_Olympics_Medals.csv
-E:
-a. Dentre os seguintes países nórdicos: Suécia, Dinamarca e Noruega, verifique: No século XXI 
-(a partir de 2001), #SWE, DEN, NOR
-qual foi o maior medalhista de ouro, considerando apenas as seguintes modalidades:
-i. Curling
-ii. Patinação no gelo (skating)
-iii. Esqui (skiing)
-iv. Hóquei sobre o gelo (ice hockey)
-b. Para cada esporte, considere todas as modalidades, tanto no masculino quanto no feminino. Sua resposta deve
-imprimir um relatório mostrando o total de medalhas de cada um dos países e em que esporte, ano, cidade e
-gênero (masculino ou feminino) cada medalha foi obtida.
-
-"""
+import pandas as pd 
 import requests
-# relatório mostrando o total de medalhas de cada um dos países
-# e
-#em que esporte, ano, cidade e gênero (masculino ou feminino) cada medalha foi obtida.
-
-# 2006,Turin,Biathlon,Biathlon,POL,15km mass start,M,Silver
-
+from collections import Counter
 
 class Question_10():
 
     def __init__(self):
-        self.url = 'https://sites.google.com/site/dr2fundamentospython/arquivos/Winter_Olympics_Medals.csv'
-        self.build_table()
+
+        self.url = "https://sites.google.com/site/dr2fundamentospython/arquivos/Winter_Olympics_Medals.csv"
+        #self.medal_list = self.build_table() 
+        self.medal_list_filter = []
+        self.data_list = []
+        self.list_of_infos = []
 
     def build_table(self):
         csv = requests.get(self.url).text
-        # Separa as linhas em uma lista
-        linhas = csv.splitlines()
-        # Separa os rotulos da coluna
-        column_names = linhas[0].split(',') # Year,City,Sport,Discipline,NOC,Event,Event gender,Medal
+        lines = csv.splitlines() 
+        column_names = lines[0].split(",") 
 
-        self.winter_olympics_medals = []
-        #Year,City,Sport,Discipline,NOC,Event,Event gender,Medal
-        # 1992,Albertville,Biathlon,Biathlon,EUN,7.5km,W,Gold
-        for linha in range(1, len(linhas)):
-            # linha = 2006,Turin,Biathlon,Biathlon,POL,15km mass start,M,Silver
-            #linha[0] => 2
-            colunas = linhas[linha].split(',') #extrai valores separados por virgula
-            # colunas = [1992,Albertville,Biathlon,Biathlon,EUN,7.5km,W,Gold]
-            #colunas[0] => 1992
+        for l in range(1, len(lines)):
+            column = lines[l].split(",")
+            label = column[0]
             obj = {}
-            # Year,City,Sport,Discipline,NOC,Event,Event gender,Medal
-            # 1992,Albertville,Biathlon,Biathlon,EUN,7.5km,W,Gold
-            # {'Year': '2006', 'City': 'Turin', 'Sport': 'Skiing', 'Discipline': 'Snowboard', 'NOC': 'USA', 'Event': 'Snowboard Cross', 'Event gender': 'W', 'Medal': 'Silver'}
+
             for index, name in enumerate(column_names):
-                obj[name] = colunas[index]
-                self.winter_olympics_medals.append(obj)
-
-    # def teste(self):
-    #     val = 0
-    #     for item in self.winter_olympics_medals:
-    #         if item['NOC'] == 'SWE' and item['Medal'] == 'Gold' and int(item['Year']) >= 2001 and item['Sport'] in ['Skiing', 'Ice Hockey', 'Curling', 'Skating']:
-    #             val += 1
-    #             print(item)
-    #     print(val)
-
-    def by_country_list(self, country_list):
-        self.country_list = country_list
+                obj[name] = column[index]
+            self.data_list.append(obj)
         return self
 
-    def by_starting_year(self, year):
-        self.starting_year = year
+    def filter_sport_by_medal(self):
+        for medal in self.data_list:
+            if int(medal["Year"]) >= 2001:
+                if medal["NOC"] == "SWE" or medal["NOC"] == "NOR" or medal["NOC"] == "DEN":
+                    if(medal["Sport"].lower() == "curling" or medal["Sport"].lower() == "skating" or medal["Sport"].lower() == "skiing" or medal["Sport"].lower() == "ice hockey"):
+                        if medal["Medal"] == "Gold":
+                            self.medal_list_filter.append(medal)
         return self
 
-    def by_sport_list(self, sport_list):
-        self.sport_list = sport_list
+    def get_report(self):
+        for medal in self.data_list:
+            info = "Medalha: %s, Esporte: %s, País: %s, Cidade: %s. Ano: %s, Gênero: %s, Disciplina: %s, Evento: %s" % (medal["Medal"], medal["Sport"], medal["NOC"], medal["City"], medal["Year"], medal["Event gender"], medal["Discipline"], medal["Event"])
+            self.list_of_infos.append(info)
         return self
-
-    def get_total_gold_medals(self, country):
-        self.medal_count_by_country[country] = 0
-        for medal in self.winter_olympics_medals:
-            if int(medal['Year']) >= self.starting_year and medal['NOC'] == country and medal['Sport'] in self.sport_list and medal['Medal'] == 'Gold':
-                self.medal_count_by_country[country] += 1
-
-    def print_winner(self):
-        self.medal_count_by_country = {}
-        for country in self.country_list:
-            self.get_total_gold_medals(country)
-
-        # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
-        ranking = sorted(self.medal_count_by_country.items(), key=lambda x: x[1], reverse=True) # [('NOR', 88), ('SWE', 48), ('DEN', 0)]
-
-        print(f'O Vencedor em Numeros de Medalhas de Ouro foi o País "{ranking[0][0]}" com {ranking[0][1]} Medalhas')
-        return self
-
+    
+    def print_output(self):
+        print("Report for total medals for each country:") 
+        print(self.list_of_infos) 
+        print("_____ end of report ____")
+        country = Counter(map(lambda medal: medal["NOC"], self.medal_list_filter)).most_common(1) 
+        print(f"\nThe biggest gold medalist was {country[0][0]} with {country[0][1]} medals.")
+        
 
 def main():
-    Question_10().by_country_list(['SWE', 'DEN', 'NOR']).by_starting_year(2001).by_sport_list(['Skiing', 'Ice Hockey', 'Curling', 'Skating']).print_winner()
-    #Question_10().teste()
+    Question_10().build_table().filter_sport_by_medal().get_report().print_output()
 
 main()
