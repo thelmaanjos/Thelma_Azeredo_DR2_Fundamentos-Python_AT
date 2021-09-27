@@ -63,12 +63,12 @@ class Question_11():
         return self
         
     def get_ten_years_best_sellers(self):
-        big_publisher_platform = Counter(map(lambda game: game["Publisher"], self.platform_games)).most_common(1)[0]
-        print(f"\nThe brand with the most platform games publications in the last 10 years is {big_publisher_platform[0]} with {big_publisher_platform[1]} publications")
-        big_publisher_shooter = Counter(map(lambda game: game["Publisher"], self.shooter_games)).most_common(1)[0]
-        print(f"The brand with the most shooter games publications in the last 10 years is {big_publisher_shooter[0]} with {big_publisher_shooter[1]} publicações")
-        big_publisher_action = Counter(map(lambda game: game["Publisher"], self.action_games)).most_common(1)[0] 
-        print(f"The brand with the most action games publications in the last 10 years is {big_publisher_action[0]} with {big_publisher_action[1]} publications") 
+        best_publisher_platform = Counter(map(lambda game: game["Publisher"], self.platform_games)).most_common(1)[0]
+        print(f"\nThe brand with the most platform games publications in the last 10 years is {best_publisher_platform[0]} with {best_publisher_platform[1]} publications")
+        best_publisher_shooter = Counter(map(lambda game: game["Publisher"], self.shooter_games)).most_common(1)[0]
+        print(f"The brand with the most shooter games publications in the last 10 years is {best_publisher_shooter[0]} with {best_publisher_shooter[1]} publicações")
+        best_publisher_action = Counter(map(lambda game: game["Publisher"], self.action_games)).most_common(1)[0] 
+        print(f"The brand with the most action games publications in the last 10 years is {best_publisher_action[0]} with {best_publisher_action[1]} publications") 
         return self
 
     def get_best_seller_action(self):
