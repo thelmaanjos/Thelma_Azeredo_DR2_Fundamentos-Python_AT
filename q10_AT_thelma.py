@@ -38,7 +38,7 @@ class Question_10():
 
     def get_report(self):
         for medal in self.data_list:
-            info = "Medalha: %s, Esporte: %s, País: %s, Cidade: %s. Ano: %s, Gênero: %s, Disciplina: %s, Evento: %s" % (medal["Medal"], medal["Sport"], medal["NOC"], medal["City"], medal["Year"], medal["Event gender"], medal["Discipline"], medal["Event"])
+            info = "Year: %s, City: %s, Sport: %s, Discipline: %s, NOC: %s, Event: %s, Event gender: %s, Medal: %s" % (medal["Year"], medal["City"],  medal["Sport"], medal["Discipline"], medal["NOC"], medal["Event"], medal["Event gender"], medal["Medal"])
             self.list_of_infos.append(info)
         return self
     
