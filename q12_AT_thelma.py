@@ -7,12 +7,11 @@ class Question_12():
         self.url = requests.get('https://fgopassos.github.io/pagina_exemplo/estadosCentroOeste.html').text
         self.bs_soup = BeautifulSoup(self.url, 'html.parser')
         self.filter_states = ['DF', 'GO', 'MT', 'MS']
-        self.data_list = []
+        self.cell = 'div', {'class': 'celula'}
 
     def show_tables(self):
         for data in self.bs_soup.find_all('div', {'class': 'tabela'}): 
             print(data.get_text())
-            print(self.data_list)
         return self
 
     def show_state_info(self):
@@ -22,14 +21,16 @@ class Question_12():
                 print("Not a valid state.")
                 return
             else:
-                print('hi')
-               
-
-    def print_output(self):
-        #print(self.data.get_text())
-        pass
+                for data in self.bs_soup.find_all('div', {'class': 'linha'}): 
+                    if input_state == data.find_all(self.cell)[0].get_text():
+                        print(data.find_all(self.cell)[0].get_text())
+                        print(data.find_all(self.cell)[1].get_text())
+                        print(data.find_all(self.cell)[2].get_text())
+                        print(data.find_all(self.cell)[3].get_text())
+                        print(data.find_all(self.cell)[4].get_text())
+                return self
 
 def main():
-    Question_12().show_tables().show_state_info()#.print_output()
+    Question_12().show_tables().show_state_info()
 
 main()
